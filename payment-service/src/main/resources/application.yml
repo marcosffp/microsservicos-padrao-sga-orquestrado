@@ -18,6 +18,8 @@ spring:
 
   kafka:
     bootstrap-servers: ${KAFKA_BROKER:localhost:9092}
+    admin:
+      auto-create: true
     topic:
         orchestrator: orchestrator
         payment-success: payment-success

@@ -5,6 +5,8 @@ server:
 spring:
   kafka:
     bootstrap-servers: ${KAFKA_BROKER:localhost:9092}
+    admin:
+      auto-create: true
     consumer:
       group-id: orchestrator-group
       auto-offset-reset: latest

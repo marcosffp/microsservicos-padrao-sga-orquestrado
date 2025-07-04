@@ -20,6 +20,8 @@ spring:
 
   kafka:
     bootstrap-servers: ${KAFKA_BROKER:localhost:9092}
+    admin:
+      auto-create: true
     topic:
         orchestrator: orchestrator
         inventory-success: inventory-success
