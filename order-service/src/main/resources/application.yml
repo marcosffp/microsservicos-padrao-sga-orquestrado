@@ -15,11 +15,24 @@ spring:
 
   data:
     mongodb:
-      database: admin
-      uri: mongodb://admin:123456@localhost:27017/admin
+      database: order-db
+      uri: mongodb://admin:123456@127.0.0.1:27018/order-db?authSource=admin
+
+
+
 
 logging:
   level:
     org:
       apache:
-        kafka: OFF
+         kafka: OFF
+      springframework:
+        web: DEBUG
+        http:
+          converter:
+            json: TRACE
+    com:
+      fasterxml:
+        jackson: TRACE
+
+    
