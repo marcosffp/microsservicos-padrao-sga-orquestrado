@@ -4,9 +4,14 @@ server:
 
 spring:
   kafka:
-    bootstrap-servers: ${KAFKA_BROKER:localhost:9092}
+    bootstrap-servers: localhost:9092
     admin:
       auto-create: true
+    topic: 
+      start-saga: start-saga
+      orchestrator: orchestrator
+      finish-success: finish-success
+      finish-fail: finish-fail
     consumer:
       group-id: orchestrator-group
       auto-offset-reset: latest

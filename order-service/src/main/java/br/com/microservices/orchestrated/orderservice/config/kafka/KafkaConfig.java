@@ -46,10 +46,11 @@ public class KafkaConfig {
 
   @Bean
   public ConsumerFactory<String, String> consumerFactory() {
-    return new DefaultKafkaConsumerFactory<>(cosumerProps());
+    return new DefaultKafkaConsumerFactory<>(consumerProps());
+
   }
 
-  private Map<String, Object> cosumerProps() {
+  private Map<String, Object> consumerProps(){
     var props = new HashMap<String, Object>();
     props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
     props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -95,5 +96,7 @@ public class KafkaConfig {
   public NewTopic notifyEndingTopic() {
     return buildTopic(notifyEndingTopic);
   }
+
+  
 
 }

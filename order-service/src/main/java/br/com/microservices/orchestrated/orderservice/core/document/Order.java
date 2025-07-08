@@ -3,22 +3,27 @@ package br.com.microservices.orchestrated.orderservice.core.document;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Order {
   private String id;
   private List<OrderProducts> products;
+
+
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   private LocalDateTime createdAt;
+
   private String transactionId;
   private double totalAmount;
   private int totalItems;
-  
-  
 }

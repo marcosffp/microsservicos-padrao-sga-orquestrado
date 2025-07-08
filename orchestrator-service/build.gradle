@@ -28,6 +28,10 @@ dependencies {
     // Spring Boot Starters
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+        // Dependências do Jackson para manipulação de JSON
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     
     // Kafka
     implementation 'org.springframework.kafka:spring-kafka'
@@ -46,6 +50,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation 'org.awaitility:awaitility:4.2.1'
+
+
     
     // Documentação API
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'

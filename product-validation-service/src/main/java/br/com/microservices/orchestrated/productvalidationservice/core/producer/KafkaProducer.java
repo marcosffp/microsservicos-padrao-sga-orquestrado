@@ -2,8 +2,7 @@ package br.com.microservices.orchestrated.productvalidationservice.core.producer
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.core.KafkaTemplate;
+
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
