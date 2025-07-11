@@ -11,20 +11,21 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @RequiredArgsConstructor
 public class SagaProducer {
-  
+
   private final KafkaTemplate<String, String> kafkaTemplate;
 
-  
   @Value("${spring.kafka.topic.start-saga}")
   private String startSagaTopic;
 
+
   public void sendEvent(String payload) {
     try {
-      log.info("Sending event to topic {} with data {}", startSagaTopic, payload);
+
+      log.info("Enviando evento para o tópico {}: {}", startSagaTopic, payload);
       kafkaTemplate.send(startSagaTopic, payload);
+
     } catch (Exception e) {
-      log.error("Error trying to send data to topic {} with data {}", startSagaTopic, payload, e.getMessage());
+      log.error("Erro ao enviar para o tópico {}: {}", startSagaTopic, payload, e);
     }
   }
-  
 }

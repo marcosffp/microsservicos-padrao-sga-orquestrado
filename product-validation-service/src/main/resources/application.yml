@@ -1,6 +1,7 @@
 server:
   port: 8090
 
+# Configuração do banco de dados PostgreSQL
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -24,28 +25,22 @@ spring:
       data-locations: classpath:import.sql
       continue-on-error: false
 
+  # Configuração do Kafka
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     admin:
       auto-create: true
     topic:
-      orchestrator: orchestrator
-      product-validation-success: product-validation-success
-      product-validation-fail: product-validation-fail
+      orchestrator: ${KAFKA_TOPIC_ORCHESTRATOR:orchestrator}
+      product-validation-success: ${KAFKA_TOPIC_PRODUCT_VALIDATION_SUCCESS:product-validation-success}
+      product-validation-fail: ${KAFKA_TOPIC_PRODUCT_VALIDATION_FAIL:product-validation-fail}
     consumer:
-      group-id: product-validation-group
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:product-validation-group}
       auto-offset-reset: latest
 
+# Configuração de logs
 logging:
   level:
     org:
       apache:
         kafka: OFF
-      springframework:
-        jdbc:
-          datasource:
-            init: DEBUG
-        sql:
-          init: DEBUG
-      hibernate: INFO
-    root: INFO

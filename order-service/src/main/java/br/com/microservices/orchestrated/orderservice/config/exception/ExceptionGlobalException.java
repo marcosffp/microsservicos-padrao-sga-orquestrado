@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class ExceptionGlobalException {
-
+  
   @ExceptionHandler(ValidationException.class)
-  public ResponseEntity<?> handleValidationException(ValidationException ex) {
+  public ResponseEntity<ExceptionDetails> handleValidationException(ValidationException ex) {
     var details = new ExceptionDetails(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
-    return new ResponseEntity<>(details, HttpStatus.BAD_REQUEST);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(details);
   }
 }

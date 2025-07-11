@@ -22,5 +22,5 @@ public class Product {
   private Integer id;
 
   @Column(nullable = false)
-  private String code;
+  private String  code;
 }

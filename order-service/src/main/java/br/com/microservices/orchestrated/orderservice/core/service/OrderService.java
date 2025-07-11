@@ -4,9 +4,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 import br.com.microservices.orchestrated.orderservice.core.document.Event;
 import br.com.microservices.orchestrated.orderservice.core.document.Order;
@@ -16,34 +15,26 @@ import br.com.microservices.orchestrated.orderservice.core.repository.OrderRepos
 import br.com.microservices.orchestrated.orderservice.core.utils.JsonUtil;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
-  @Autowired
-  private OrderRepository orderRepository;
+  private final OrderRepository orderRepository;
+  private final JsonUtil jsonUtil;
+  private final EventService eventService;
+  private final SagaProducer sagaProducer;
 
   private static final String TRANSACTION_ID_PATTERN = "%s_%s";
 
-  @Autowired
-  private JsonUtil jsonUtil;
-
-  @Autowired
-  private EventService eventService;
-
-  @Autowired
-  private SagaProducer sagaProducer;
-
   public Order createOrder(OrderRequest orderRequest) {
     var products = orderRequest.products();
-    
-    // Calcula o total de itens
+
     int totalItems = products.stream()
         .mapToInt(orderProduct -> orderProduct.getQuantity())
         .sum();
-    
-    // Calcula o valor total
+
     double totalAmount = products.stream()
         .mapToDouble(orderProduct -> orderProduct.getProduct().getUnitValue() * orderProduct.getQuantity())
         .sum();
-    
+
     Order order = Order.builder()
         .products(products)
         .createdAt(LocalDateTime.now())
@@ -59,14 +50,11 @@ public class OrderService {
   }
 
   private Event createPayload(Order order) {
-    Event event = Event.builder()
+    return eventService.save(Event.builder()
         .orderId(order.getId())
         .transactionId(order.getTransactionId())
         .payload(order)
         .createdAt(LocalDateTime.now())
-        .build();
-
-    return eventService.save(event);
-
+        .build());
   }
 }

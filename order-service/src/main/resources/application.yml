@@ -1,38 +1,28 @@
 server:
   port: 3000
 
+# Kafka Configuration
 spring:
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     admin:
       auto-create: true
     topic:
-      start-saga: start-saga
-      notify-ending: notify-ending
+      start-saga: ${KAFKA_TOPIC_START_SAGA:start-saga}
+      notify-ending: ${KAFKA_TOPIC_NOTIFY_ENDING:notify-ending}
     consumer:
-      group-id: order-group
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:order-group}
       auto-offset-reset: latest
 
+  # MongoDB Configuration
   data:
     mongodb:
-      database: order-db
-      uri: mongodb://admin:123456@127.0.0.1:27018/order-db?authSource=admin
+      database: ${MONGODB_DATABASE:order-db}
+      uri: ${MONGODB_URI:mongodb://admin:123456@127.0.0.1:27018/order-db?authSource=admin}
 
-
-
-
+# Logging Configuration
 logging:
   level:
     org:
       apache:
-         kafka: OFF
-      springframework:
-        web: DEBUG
-        http:
-          converter:
-            json: TRACE
-    com:
-      fasterxml:
-        jackson: TRACE
-
-    
+        kafka: OFF

@@ -43,9 +43,7 @@ public class Validation {
 
   @PrePersist
   public void prePersist() {
-    LocalDateTime now = LocalDateTime.now();
-    createdAt = now;
-    updatedAt = now;
+    updatedAt = createdAt = LocalDateTime.now();
   }
 
   @PreUpdate

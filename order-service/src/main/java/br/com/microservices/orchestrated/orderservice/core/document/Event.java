@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Document(collection = "event")
 public class Event {
-  
+
   @Id
   private String id;
   private String transactionId;

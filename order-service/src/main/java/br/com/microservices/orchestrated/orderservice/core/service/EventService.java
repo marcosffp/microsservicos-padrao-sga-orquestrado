@@ -3,8 +3,9 @@ package br.com.microservices.orchestrated.orderservice.core.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
 
 import br.com.microservices.orchestrated.orderservice.config.exception.ValidationException;
 import br.com.microservices.orchestrated.orderservice.core.document.Event;
@@ -14,15 +15,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class EventService {
-  @Autowired
-  private EventRepository eventRepository;
+  
+  private final EventRepository eventRepository;
 
   public void notifyEnding(Event event) {
-    event.setOrderId(event.getOrderId());
     event.setCreatedAt(LocalDateTime.now());
     save(event);
-    log.info("Order {} with saga notifiel! Transaction ID: {}", event.getOrderId(), event.getTransactionId());
+    log.info("Pedido {} com saga notificado! ID da transação: {}", event.getOrderId(), event.getTransactionId());
   }
 
   public Event save(Event event) {
@@ -30,35 +31,30 @@ public class EventService {
   }
 
   public Event findByFilters(EventFilters filters) {
-    validateEmptyFilters(filters);
-    if (!filters.getOrderId().isEmpty()) {
-      return findByOrderId(filters.getOrderId());
-    } else {
-      return findByTransactionId(filters.getTransactionId());
+    if (isEmpty(filters.orderId()) && isEmpty(filters.transactionId())) {
+      throw new ValidationException("OrderID ou TransactionID devem ser informados.");
     }
+    if (!isEmpty(filters.orderId())) {
+      return findByOrderId(filters.orderId());
+    }
+    return findByTransactionId(filters.transactionId());
   }
 
-  private void validateEmptyFilters(EventFilters filters) {
-    if (filters.getOrderId().isEmpty() && filters.getTransactionId().isEmpty()) {
-      throw new ValidationException("OrderID or TransactionID must be informed.");
-    }
+  private boolean isEmpty(String value) {
+    return value == null || value.isEmpty();
   }
 
   private Event findByTransactionId(String transactionId) {
-    return eventRepository
-        .findTop1ByTransactionIdOrderByCreatedAtDesc(transactionId)
-        .orElseThrow(() -> new ValidationException("Event not found by transactionId."));
+    return eventRepository.findTop1ByTransactionIdOrderByCreatedAtDesc(transactionId)
+        .orElseThrow(() -> new ValidationException("Evento não encontrado pelo transactionId."));
   }
 
   private Event findByOrderId(String orderId) {
-    return eventRepository
-        .findTop1ByOrderIdOrderByCreatedAtDesc(orderId)
-        .orElseThrow(() -> new ValidationException("Event not found by orderID."));
+    return eventRepository.findTop1ByOrderIdOrderByCreatedAtDesc(orderId)
+        .orElseThrow(() -> new ValidationException("Evento não encontrado pelo orderID."));
   }
 
   public List<Event> findAll() {
-  return eventRepository.findAll();
-}
-
-
+    return eventRepository.findAll();
+  }
 }
