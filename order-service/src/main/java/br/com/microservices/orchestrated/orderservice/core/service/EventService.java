@@ -23,7 +23,6 @@ public class EventService {
     event.setCreatedAt(LocalDateTime.now());
     save(event);
     log.info("Order {} with saga notifiel! Transaction ID: {}", event.getOrderId(), event.getTransactionId());
-
   }
 
   public Event save(Event event) {

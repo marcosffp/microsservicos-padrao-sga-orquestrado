@@ -1,0 +1,11 @@
+{
+  "products": [
+    {
+      "product": {
+        "code": "string",
+        "unitValue": 0.1
+      },
+      "quantity": 1073741824
+    }
+  ]
+}
