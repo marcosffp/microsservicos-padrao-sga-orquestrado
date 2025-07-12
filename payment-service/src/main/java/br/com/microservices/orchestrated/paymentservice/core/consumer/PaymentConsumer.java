@@ -3,47 +3,31 @@ package br.com.microservices.orchestrated.paymentservice.core.consumer;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import br.com.microservices.orchestrated.paymentservice.core.dto.Event;
+import br.com.microservices.orchestrated.paymentservice.core.service.PaymentService;
 import br.com.microservices.orchestrated.paymentservice.core.utils.JsonUtil;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PaymentConsumer {
+
   private final JsonUtil jsonUtil;
+  private final PaymentService paymentService;
 
   @KafkaListener(groupId = "${spring.kafka.consumer.group-id}", topics = "${spring.kafka.topic.payment-success}")
   public void consumeSuccessEvent(String payload) {
-    try {
-      log.info("Receiving success event {} from product payment success topic", payload);
-      Event event = jsonUtil.toEvent(payload);
-      log.info("Evento desserializado com sucesso: {}", event.getId());
-      processEvent(event);
-    } catch (Exception e) {
-      log.error("Falha ao processar evento. Payload: {}", shortenPayload(payload), e);
-    }
+    log.info("Recebido evento de paymnet-success: {}", payload);
+    var event = jsonUtil.toEvent(payload);
+    paymentService.realizePayment(event);
   }
 
   @KafkaListener(groupId = "${spring.kafka.consumer.group-id}", topics = "${spring.kafka.topic.payment-fail}")
   public void consumeFailEvent(String payload) {
-    try {
-      log.info("Receiving fail event {} from product payment fail topic", payload);
-      Event event = jsonUtil.toEvent(payload);
-      log.info("Evento desserializado com sucesso: {}", event.getId());
-      processEvent(event);
-    } catch (Exception e) {
-      log.error("Falha ao processar evento. Payload: {}", shortenPayload(payload), e);
-    }
-  }
-
-  private String shortenPayload(String payload) {
-    return payload.length() > 200 ? payload.substring(0, 200) + "..." : payload;
-  }
-
-  private void processEvent(Event event) {
-    log.info("Processando evento ID: {}", event.getId());
+    log.info("Recebido evento de paymnet-fail: {}", payload);
+    var event = jsonUtil.toEvent(payload);
+    paymentService.realizeRefund(event);
   }
 
 }
