@@ -54,7 +54,7 @@ public class PaymentService {
     int totalItems = calculateItems(event);
     var payment = Payment.builder()
         .orderId(event.getPayload().getId())
-        .transaciontId(event.getTransactionId())
+        .transactionId(event.getTransactionId())
         .totalItems(totalItems)
         .totalAmount(totalAmount)
         .build();

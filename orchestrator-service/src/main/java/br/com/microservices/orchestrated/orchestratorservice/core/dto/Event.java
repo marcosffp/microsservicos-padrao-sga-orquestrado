@@ -1,6 +1,7 @@
 package br.com.microservices.orchestrated.orchestratorservice.core.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.microservices.orchestrated.orchestratorservice.core.enums.EEventSource;
@@ -23,4 +24,11 @@ public class Event {
   private ESagaStatus status;
   private List<History> eventHistory;
   private LocalDateTime createdAt;
+
+  public void addToHistory(History history) {
+    if (eventHistory == null) {
+      eventHistory = new ArrayList<>();
+    }
+    eventHistory.add(history);
+  }
 }

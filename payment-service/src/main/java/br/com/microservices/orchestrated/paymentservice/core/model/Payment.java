@@ -34,7 +34,7 @@ public class Payment {
   private String orderId;
 
   @Column(nullable = false)
-  private String transaciontId;
+  private String transactionId;
 
   @Column(nullable = false,updatable = false)
   private LocalDateTime createdAt;

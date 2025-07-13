@@ -1,6 +1,5 @@
 package br.com.microservices.orchestrated.orchestratorservice.config.kafka;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.kafka.clients.admin.NewTopic;
@@ -20,39 +19,33 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
 import br.com.microservices.orchestrated.orchestratorservice.core.enums.ETopics;
-import lombok.RequiredArgsConstructor;
 
 @EnableKafka
 @Configuration
-@RequiredArgsConstructor
 public class KafkaConfig {
-
-  private static final Integer PARTITION_COUNT = 1;
-  private static final Integer REPLICATION_COUNT = 1;
 
   @Value("${spring.kafka.bootstrap-servers}")
   private String bootstrapServers;
-
   @Value("${spring.kafka.consumer.group-id}")
   private String groupId;
-
   @Value("${spring.kafka.consumer.auto-offset-reset}")
   private String autoOffsetReset;
 
+  private static final int PARTITIONS = 1;
+  private static final int REPLICATION = 1;
+
   @Bean
   public ConsumerFactory<String, String> consumerFactory() {
-    return new DefaultKafkaConsumerFactory<>(cosumerProps());
+    return new DefaultKafkaConsumerFactory<>(consumerProps());
   }
 
-  private Map<String, Object> cosumerProps() {
-    var props = new HashMap<String, Object>();
-    props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-    props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-    props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-    props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-    props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-    props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
-    return props;
+  private Map<String, Object> consumerProps() {
+    return Map.of(
+        ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers,
+        ConsumerConfig.GROUP_ID_CONFIG, groupId,
+        ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
+        ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
+        ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
   }
 
   @Bean
@@ -61,23 +54,22 @@ public class KafkaConfig {
   }
 
   private Map<String, Object> producerProps() {
-    var props = new HashMap<String, Object>();
-    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-    return props;
+    return Map.of(
+        ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers,
+        ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
+        ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
   }
 
   @Bean
-  public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory) {
-    return new KafkaTemplate<>(producerFactory);
+  public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> pf) {
+    return new KafkaTemplate<>(pf);
   }
 
   private NewTopic buildTopic(String topicName) {
     return TopicBuilder
         .name(topicName)
-        .replicas(REPLICATION_COUNT)
-        .partitions(PARTITION_COUNT)
+        .replicas(REPLICATION)
+        .partitions(PARTITIONS)
         .build();
   }
 

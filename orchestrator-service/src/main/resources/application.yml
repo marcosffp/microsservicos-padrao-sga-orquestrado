@@ -1,23 +1,24 @@
 server:
-  port: 8080
+  port: ${PORTA_ORCHESTRATOR_SERVICE}
 
-
+# Configuração do Kafka
 spring:
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
     admin:
       auto-create: true
-    topic: 
-      start-saga: start-saga
-      orchestrator: orchestrator
-      finish-success: finish-success
-      finish-fail: finish-fail
+    topic:
+      start-saga: ${KAFKA_TOPIC_START_SAGA}
+      orchestrator: ${KAFKA_TOPIC_ORCHESTRATOR}
+      finish-success: ${KAFKA_TOPIC_FINISH_SUCCESS}
+      finish-fail: ${KAFKA_TOPIC_FINISH_FAIL}
     consumer:
-      group-id: orchestrator-group
+      group-id: ${KAFKA_CONSUMER_GROUP_ID}
       auto-offset-reset: latest
 
+# Configuração de logs
 logging:
-    level:
-      org:
-        apache:
-          kafka: OFF
+  level:
+    org:
+      apache:
+        kafka: OFF

@@ -26,23 +26,11 @@ public class OrderService {
 
   public Order createOrder(OrderRequest orderRequest) {
     var products = orderRequest.products();
-
-    int totalItems = products.stream()
-        .mapToInt(orderProduct -> orderProduct.getQuantity())
-        .sum();
-
-    double totalAmount = products.stream()
-        .mapToDouble(orderProduct -> orderProduct.getProduct().getUnitValue() * orderProduct.getQuantity())
-        .sum();
-
     Order order = Order.builder()
         .products(products)
         .createdAt(LocalDateTime.now())
         .transactionId(String.format(TRANSACTION_ID_PATTERN, Instant.now().toEpochMilli(), UUID.randomUUID()))
-        .totalAmount(totalAmount)
-        .totalItems(totalItems)
         .build();
-
     orderRepository.save(order);
     sagaProducer.sendEvent(jsonUtil.toJson(createPayload(order)));
 

@@ -85,20 +85,35 @@ services:
 
 # Microservices
   order-service:
-    build:
-      context: ./order-service
-      dockerfile: Dockerfile
-    container_name: order-service
-    ports:
-      - "3000:3000"
-    environment:
-      - KAFKA_BROKER=kafka:9092
-      - MONGO_DB_URI=mongodb://admin:123456@order-db:27017
-    depends_on:
-      - order-db
-      - kafka
-    networks:
-      - orchestrator-saga
+   build:
+    context: ./order-service
+    dockerfile: Dockerfile
+   container_name: order-service
+   ports:
+    - "3000:3000"
+   environment:
+    # Configurações da porta da aplicação
+    - PORTA_ORDER_SERVICE=3000
+
+    # Configurações do Kafka
+    - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    - KAFKA_TOPIC_START_SAGA=start-saga
+    - KAFKA_TOPIC_NOTIFY_ENDING=notify-ending
+    - KAFKA_CONSUMER_GROUP_ID=order-group
+
+    # Configurações do MongoDB
+    - MONGODB_HOST=order-db
+    - MONGODB_PORT=27017
+    - MONGODB_DATABASE=order-db
+    - MONGODB_USERNAME=admin
+    - MONGODB_PASSWORD=123456
+    - MONGODB_AUTH_SOURCE=admin
+   depends_on:
+    - order-db
+    - kafka
+   networks:
+    - orchestrator-saga
+  
 
   product-validation-service:
     build:
@@ -108,12 +123,22 @@ services:
     ports:
       - "8090:8090"
     environment:
-      - KAFKA_BROKER=kafka:9092
-      - DB_HOST=product-db
-      - DB_PORT=5433
-      - DB_NAME=product-db
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
+     # Configurações da porta da aplicação
+     - PORTA_PRODUCT_VALIDATION_SERVICE=8090
+
+     # Configurações do Kafka 
+     - KAFKA_BOOTSTRAP_SERVERS=kafka:9092  
+     - KAFKA_TOPIC_ORCHESTRATOR=orchestrator
+     - KAFKA_TOPIC_PRODUCT_VALIDATION_SUCCESS=product-validation-success
+     - KAFKA_TOPIC_PRODUCT_VALIDATION_FAIL=product-validation-fail
+     - KAFKA_CONSUMER_GROUP_ID=product-validation-group
+    
+     # Configurações do PostgreSQL
+     - DB_HOST=product-db
+     - DB_PORT=5432  
+     - DB_NAME=product-db
+     - DB_USER=postgres
+     - DB_PASSWORD=postgres
     depends_on:
       - product-db
       - kafka
@@ -128,12 +153,22 @@ services:
     ports:
       - "8091:8091"
     environment:
-      - KAFKA_BROKER=kafka:9092
-      - DB_HOST=payment-db
-      - DB_PORT=5434
-      - DB_NAME=payment-db
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
+     # Configurações da porta da aplicação
+     - PORTA_PAYMENT_SERVICE=8091
+
+     # Configurações do Kafka 
+     - KAFKA_BOOTSTRAP_SERVERS=kafka:9092  
+     - KAFKA_TOPIC_ORCHESTRATOR=orchestrator
+     - KAFKA_TOPIC_PAYMENT_SUCCESS=payment-success  
+     - KAFKA_TOPIC_PAYMENT_FAIL=payment-fail       
+     - KAFKA_CONSUMER_GROUP_ID=payment-group
+    
+     # Configurações do PostgreSQL
+     - DB_HOST=payment-db
+     - DB_PORT=5432  
+     - DB_NAME=payment-db
+     - DB_USER=postgres
+     - DB_PASSWORD=postgres
     depends_on:
       - payment-db
       - kafka
@@ -148,12 +183,22 @@ services:
     ports:
       - "8092:8092"
     environment:
-      - KAFKA_BROKER=kafka:9092
-      - DB_HOST=inventory-db
-      - DB_PORT=5435
-      - DB_NAME=inventory-db
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
+     # Configurações da porta da aplicação
+     - PORTA_INVENTORY_SERVICE=8092
+
+     # Configurações do Kafka
+     - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+     - KAFKA_TOPIC_ORCHESTRATOR=orchestrator
+     - KAFKA_TOPIC_INVENTORY_SUCCESS=inventory-success
+     - KAFKA_TOPIC_INVENTORY_FAIL=inventory-fail
+     - KAFKA_CONSUMER_GROUP_ID=inventory-group
+    
+     # Configurações do PostgreSQL
+     - DB_HOST=inventory-db
+     - DB_PORT=5432
+     - DB_NAME=inventory-db
+     - DB_USER=postgres
+     - DB_PASSWORD=postgres
     depends_on:
       - inventory-db
       - kafka
@@ -168,7 +213,16 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - KAFKA_BROKER=kafka:9092
+     # Configurações da porta da aplicação
+     - PORTA_ORCHESTRATOR_SERVICE=8080
+
+     # Configurações do Kafka 
+     - KAFKA_BOOTSTRAP_SERVERS=kafka:9092  
+     - KAFKA_TOPIC_START_SAGA=start-saga
+     - KAFKA_TOPIC_ORCHESTRATOR=orchestrator
+     - KAFKA_TOPIC_FINISH_SUCCESS=finish-success
+     - KAFKA_TOPIC_FINISH_FAIL=finish-fail
+     - KAFKA_CONSUMER_GROUP_ID=orchestrator-group
     depends_on:
       - kafka
     networks:
