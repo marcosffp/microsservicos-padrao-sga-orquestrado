@@ -29,7 +29,7 @@ Para acessar o curso na plataforma, basta acessar esta URL: https://www.udemy.co
 
 [Voltar ao início](#sum%C3%A1rio)
 
-* **Java 17**
+* **Java 21**
 * **Spring Boot 3**
 * **Apache Kafka**
 * **API REST**
@@ -43,7 +43,7 @@ Para acessar o curso na plataforma, basta acessar esta URL: https://www.udemy.co
 
 [Voltar ao início](#sum%C3%A1rio)
 
-* **IntelliJ IDEA Community Edition**
+* **VsCode**
 * **Docker**
 * **Gradle**
 
@@ -79,7 +79,7 @@ Há várias maneiras de executar os projetos:
 Para rodar as aplicações, será necessário ter instalado:
 
 * **Docker**
-* **Java 17**
+* **Java 21 **
 * **Gradle 7.6 ou superior**
 
 ### 01 - Execução geral via docker-compose
@@ -160,9 +160,9 @@ As aplicações executarão nas seguintes portas:
 * Inventory-Service: 8092
 * Apache Kafka: 9092
 * Redpanda Console: 8081
-* PostgreSQL (Product-DB): 5432
-* PostgreSQL (Payment-DB): 5433
-* PostgreSQL (Inventory-DB): 5434
+* PostgreSQL (Product-DB): 5433
+* PostgreSQL (Payment-DB): 5434
+* PostgreSQL (Inventory-DB): 5435
 * MongoDB (Order-DB): 27017
 
 ## Acessando tópicos com Redpanda Console
